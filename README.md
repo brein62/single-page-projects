@@ -13,4 +13,4 @@ A lap timer. Press the spacebar to activate a new lap. Main functionality has be
 
 *Warning: App is currently not optimised for mobile yet*
 
-Link to chartester: https://brein62.github.io/single-page-projects/lap-timer
+Link to lap-timer: https://brein62.github.io/single-page-projects/lap-timer
