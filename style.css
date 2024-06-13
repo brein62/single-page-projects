@@ -6,10 +6,26 @@ body {
 
 .card {
   padding: 0.5em 1em;
+  margin-bottom: 0.55em;
+}
+
+p {
+  padding-bottom: 0.55em;
+  margin-bottom: 0 !important;
+}
+
+.nogap {
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
 .gap {
   padding-top: 0.55em;
+}
+
+.hgap {
+  display: inline-block;
+  padding-left: 0.55em;
 }
 
 .card-info {
@@ -40,4 +56,26 @@ footer {
 
 .top-section {
   text-align: center;
+}
+
+.nomlr {
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 575.98px) {
+  .hvstack {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    align-self: stretch;
+  } 
+}
+
+@media only screen and (min-width: 576px) {
+  .hvstack {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-self: stretch;    
+  }
 }
