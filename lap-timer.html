@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="https://fonts.googleapis.com/css?family=Exo+2|Open+Sans" rel="stylesheet">
+		<style type="text/css">
+			body {
+				font-family: "Exo 2", sans-serif;
+				background-color: #EEEEEE;
+				color: #111111;
+			}
+			.timer-container {
+				height: 200px;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+			div#timer {
+				font-size:125px; 
+				text-align:center;
+				font-family:sans-serif;
+				font-weight: bold;
+				padding-bottom: 20px;
+				width: 90%;
+			}
+			.flex {
+				display:flex;
+				border-top: 1.5px solid;
+				border-bottom: 1.5px solid;
+			}
+			.flex div div {
+				padding-top: 15px;
+				padding-bottom: 20px;
+			}
+			#times {
+				width: 50%;
+			}
+			#instructions {
+				border-left:1.5px solid;
+			}
+			#instructions div {
+				margin-left:15px;
+			}
+			#instructions div h1 {
+				margin: 0 0 12px 0;
+			}
+			#instructions div h1 * {
+				font-size: 30px;
+				border-bottom: 1px solid;
+			}
+			#instructions div p {
+				font-size:16px;
+				font-family: "Open Sans", sans-serif;
+				margin: 0px;
+			}
+			p.gap {
+				margin-block-start: 0.5em !important;
+				margin-block-end: 0.5em !important;
+			}
+			.BR {
+				position: absolute;
+				right: 50px;
+				bottom: 50px;
+			}
+			.button-h {
+				width: 225px;
+				height: 75px;
+				border: solid 4px;
+				border-radius: 15px;
+				font-size: 26px;
+				font-weight: bold;
+				font-family: "Exo 2", sans-serif;
+				background-color: #444444;
+				color: #BBBBBB;
+			}
+			.button-container {
+				position: absolute;
+				top: 5px;
+				right: 5px;
+				width: 70px;
+				/*border: solid 4px;
+				border-radius: 15px;
+				font-family: "Exo 2", sans-serif;
+				background-color: #444444;
+				color: #BBBBBB;*/
+			}
+			.button-v {
+				font-family: "Exo 2", sans-serif;
+				background-color: #444444;
+				color: #BBBBBB;
+				width: 100%;
+				height: 60px;
+				font-size: 26px;
+				font-weight: bold;
+			}
+			.button-v-top {
+				border: solid;
+				border-width: 3px 3px 1.5px 3px;
+				border-top-left-radius: 15px;
+				border-top-right-radius: 15px;
+			}
+			.button-v-bottom {
+				border: solid;
+				border-width: 1.5px 3px 3px 3px;
+				border-bottom-left-radius: 15px;
+				border-bottom-right-radius: 15px;
+			}
+			.button-container p {
+				text-align: center;
+				font-weight: bold;
+				font-size: 16px;
+				margin-top: 5px;
+			}
+			button {
+				outline: none;
+				box-shadow: 0 4px #999;
+			}
+			button:active {
+				box-shadow: 0 1px #666;
+				transform: translateY(3px);
+			}
+			#laplist li {
+				float: left;
+				width: 33.3%;
+			}
+			#laplist li span {
+				margin-left: 12px;
+			}
+		</style>
+		<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+		<script type="text/javascript">
+			var startTime = 0;
+			var endTime = 0;
+			var elapsedTime = 0;
+			var running = false;
+			var night = false;
+			$(document).ready(function() {
+				$(document).on("keyup", function(e) {
+					if (e.which == 32) {
+						startTiming();
+					} else if (e.which == 114 || e.which == 82) {
+						resetTiming();
+					} else {
+						if (started) {
+							stopTiming();
+						}
+					}
+				});
+				$("#night").click(function(){
+					nightMode();
+				});
+			});
+			
+			function nightMode() {
+				if (!night) {
+					night = true;
+					$("body").css({"background-color": "#111111", "color": "#eeeeee"});
+					$("button").css({"background-color": "#999999", "color": "#666666", "box-shadow": "0 4px #444444"});
+					$("button:active").css({"box-shadow": "0 1px #222222"});
+					$("#night").html("Day Mode");
+				} else {
+					night = false;
+					$("body").css({"color": "#111111", "background-color": "#eeeeee"});
+					$("button").css({"color": "#bbbbbb", "background-color": "#444444", "box-shadow": "0 4px #999999"});
+					$("button:active").css({"box-shadow": "0 1px #666666"});
+					$("#night").html("Night Mode");
+				}
+			}
+			function startTiming() {
+				if (running) {
+					recordNewLap(mstoTime(elapsedTime));
+				} else {
+					running = true;
+				}
+				startTime = new Date().getTime();
+				time();
+			} 
+			function resetTiming() {
+				stopTiming();
+				
+				alert("Reset timing");
+			}
+			function stopTiming() {
+				running = false;
+				endTimeout('time()');
+				alert("Stop timing");
+			}
+			function time() {
+				endTime = new Date().getTime();
+				elapsedTime = endTime - startTime;
+				$("#timer").html(mstoTime(elapsedTime));
+				setTimeout('time()', 15);
+			}
+			function mstoTime(input) {
+				var ms, s, min, hr;			//actual integer
+				var msd, sd, mind, hrd;		//string formatted form
+				ms = input % 1000;
+				s = ((input - ms)/1000)%60;
+				min = ((((input-ms)/1000) - s) / 60) % 60;
+				hr = (((((input-ms)/1000) - s) / 60) - min) / 60;
+				msd = display(ms, 3);
+				if (input >= 60000) {
+					sd = display(s,2);
+				} else {
+					sd = s;
+				}
+				hrd = hr;
+				if (hr > 0) {
+					mind = display(min,2);
+					return `${hrd}:${mind}:${sd}.${msd}`;			
+				} else {
+					if (min > 0) {
+						mind = min;
+						return `${mind}:${sd}.${msd}`;
+					} else {
+						return `${sd}.${msd}`;
+					}
+				}
+			}
+			function display(input, places) {
+				var i, result;
+				result = input;
+				for (i = 1; i < places; i++) {
+					if (input < (Math.pow(10,places) / Math.pow(10, i))) {
+						result = "0" + result;
+					}
+				}
+				return result;
+			}
+			function recordNewLap(timing) {
+				$("#notimes").css({display:"none"});
+				$("#laplist").append("<li class='f'><span>" + timing + "</span></li>");
+			}
+		</script>
+	</head>
+	<body>
+		<div class="timer-container">
+			<div id="timer">0:00.000</div>
+		</div>
+		<div class="flex">
+			<div id="times">
+				<div>
+					<ol id="laplist"></ol>
+					<span id="notimes">No times yet. Start the timer to obtain times XD</span>
+				</div>
+			</div>
+			<div id="instructions">
+				<div>
+					<h1><span>How to Use</span></h1>
+					<p>Press the <strong>spacebar</strong> to start the timer/each lap.</p>
+					<p>The time of the lap will be recorded.</p>
+					<p class="gap"></p>
+					<p>Press the <strong>R</strong> key to reset the timer.</p>
+					<p class="gap"></p>
+					<p>Press <strong>any other</strong> key to stop the timer.</p>
+				</div>
+			</div>
+		</div>
+		<div class="button-container">
+			<button class="button-v button-v-top" id="incsize">+</button>
+			<button class="button-v button-v-bottom" id="decsize">-</button>
+			<p class="center">TIMER SIZE</p>
+		</div>
+		<div class="BR">
+			<button class="button-h" id="night">Night Mode</button>
+		</div>
+	</body>
+</html>
